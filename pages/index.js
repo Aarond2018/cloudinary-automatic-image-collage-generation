@@ -1,9 +1,10 @@
 import { useState } from "react";
+import axios from "axios";
+
 import styles from "../styles/Home.module.css";
 
 import ImagePreview from "../components/ImagePreview";
 import ImageCollage from "../components/ImageCollage";
-import axios from "axios";
 
 export default function Home() {
 	const [files, setFiles] = useState([]);

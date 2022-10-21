@@ -1,11 +1,9 @@
-import multer from "multer";
 import axios from "axios";
 // import Cors from 'cors'
 const cloudinary = require("cloudinary").v2;
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-const myUploadMiddleware = upload.array("file");
+const {myUploadMiddleware, runMiddleware} = require("../../helper/helper")
+
 
 cloudinary.config({
 	cloud_name: "ddmm5ofs1",
@@ -18,16 +16,6 @@ cloudinary.config({
 //   methods: ['GET', 'HEAD', 'POST'],
 // })
 
-function runMiddleware(req, res, fn) {
-	return new Promise((resolve, reject) => {
-		fn(req, res, (result) => {
-			if (result instanceof Error) {
-				return reject(result);
-			}
-			return resolve(result);
-		});
-	});
-}
 
 export default async function handler(req, res) {
 	// await runMiddleware(req, res, cors)
@@ -43,22 +31,24 @@ export default async function handler(req, res) {
 
 			imgPublicIds.push(response.public_id);
 		} catch (error) {
-			res.status(400).json(error);
-			console.log({ errrrr: error });
-			return;
+			return res.status(400).json(error);
 		}
 	}
 
 	const assetsArray = imgPublicIds.map((id) => ({ media: id }));
-	console.log(assetsArray);
 
 	const manifest_json = {
-		template: "grid",
+		template: [
+			[1, 1, 2, 3, 4, 4],
+			[1, 1, 5, 5, 4, 4],
+			[6, 6, 5, 5, 4, 4],
+			[6, 6, 7, 7, 4, 4],
+		],
 		width: 400,
-		height: 400,
-		columns: 2,
-		rows: 2,
-		spacing: 1,
+		height: 320,
+		columns: 6,
+		rows: 4,
+		spacing: 7,
 		color: "green",
 		assetDefaults: { kind: "upload", crop: "fill", gravity: "auto" },
 		assets: assetsArray,
@@ -77,7 +67,6 @@ export default async function handler(req, res) {
 		);
 		res.status(200).json({ data: collageResponse.data });
 	} catch (error) {
-		console.log(error);
 		return res.status(400).json(error);
 	}
 }

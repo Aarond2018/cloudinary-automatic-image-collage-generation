@@ -1,41 +1,34 @@
-import React, { useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
-
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import styles from "../styles/Home.module.css";
 
 export default function ImageCollage({ collageId }) {
 	const [collageUrl, setCollageUrl] = useState("");
 
+	const ref = useRef();
+
 	useEffect(() => {
-		let timer;
 		async function getCollage() {
-			if(timer) clearTimeout(timer);
 			if (collageId) {
 				try {
 					const response = await axios.get(`/api/getCollage?id=${collageId}`);
 					console.log({ r: response });
 					setCollageUrl(response.data);
 				} catch (error) {
-            console.log({ttt: error})
 					if (error.response.data.message === "not found") {
-						timer = setTimeout(() => getCollage(), 10000);
+						ref.current = setTimeout(() => getCollage(), 10000);
 					}
 				}
 			}
-		};
-
-		getCollage()
-
-		return () => {
-			console.log("kkkk")
-			console.log(timer)
-			clearTimeout(timer);
 		}
+		getCollage();
+
+		return () => clearTimeout(ref.current);
 	}, [collageId]);
 
 	return (
 		<section className={styles.collage}>
-			{collageUrl ? <img src={collageUrl} alt="" /> : "loading......"}
+			{collageUrl ? <img src={collageUrl} alt="" /> : <p>loading......</p>}
 		</section>
 	);
 }
