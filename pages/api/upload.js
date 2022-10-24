@@ -2,11 +2,10 @@ import axios from "axios";
 // import Cors from 'cors'
 const cloudinary = require("cloudinary").v2;
 
-const {myUploadMiddleware, runMiddleware} = require("../../helper/helper")
-
+const { myUploadMiddleware, runMiddleware } = require("../../helpers/helpers");
 
 cloudinary.config({
-	cloud_name: "ddmm5ofs1",
+	cloud_name: process.env.CLD_CLOUD_NAME,
 	api_key: process.env.CLD_API_KEY,
 	api_secret: process.env.CLD_API_SECRET,
 	secure: true,
@@ -15,7 +14,6 @@ cloudinary.config({
 // const cors = Cors({
 //   methods: ['GET', 'HEAD', 'POST'],
 // })
-
 
 export default async function handler(req, res) {
 	// await runMiddleware(req, res, cors)
@@ -39,16 +37,15 @@ export default async function handler(req, res) {
 
 	const manifest_json = {
 		template: [
-			[1, 1, 2, 3, 4, 4],
-			[1, 1, 5, 5, 4, 4],
-			[6, 6, 5, 5, 4, 4],
-			[6, 6, 7, 7, 4, 4],
+			[1, 1, 2],
+			[1, 1, 3],
+			[1, 1, 4]
 		],
 		width: 400,
 		height: 320,
-		columns: 6,
-		rows: 4,
-		spacing: 7,
+		columns: 3,
+		rows: 3,
+		spacing: 5,
 		color: "green",
 		assetDefaults: { kind: "upload", crop: "fill", gravity: "auto" },
 		assets: assetsArray,
@@ -61,7 +58,7 @@ export default async function handler(req, res) {
 			{
 				public_id: `${Date.now()}`,
 				resource_type: "image",
-				upload_preset: "ml_default",
+				upload_preset: process.env.CLD_UPLOAD_PRESET,
 				manifest_json: JSON.stringify(manifest_json),
 			}
 		);

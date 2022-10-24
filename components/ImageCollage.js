@@ -12,7 +12,6 @@ export default function ImageCollage({ collageId }) {
 			if (collageId) {
 				try {
 					const response = await axios.get(`/api/getCollage?id=${collageId}`);
-					console.log({ r: response });
 					setCollageUrl(response.data);
 				} catch (error) {
 					if (error.response.data.message === "not found") {

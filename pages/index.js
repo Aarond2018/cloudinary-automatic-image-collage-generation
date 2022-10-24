@@ -8,8 +8,8 @@ import ImageCollage from "../components/ImageCollage";
 
 export default function Home() {
 	const [files, setFiles] = useState([]);
-	const [collageId, setCollageId] = useState("");
 	const [status, setStatus] = useState("");
+	const [collageId, setCollageId] = useState("");
 
 	const handleChange = (e) => {
 		for (const file of e.target.files) {
@@ -32,7 +32,6 @@ export default function Home() {
 
 		try {
 			const res = await axios.post("/api/upload", formData);
-			console.log(res.data.data);
 			setCollageId(res.data.data.public_id);
 			setStatus("Done, collage will be visible below in few seconds");
 		} catch (error) {
@@ -42,7 +41,12 @@ export default function Home() {
 
 	return (
 		<main className={styles.main}>
-			<input type="file" multiple onChange={handleChange} />
+			<input
+				type="file"
+				multiple
+				onChange={handleChange}
+				onClick={e => e.currentTarget.value = null}
+			/>
 			{files.length !== 0 && (
 				<ImagePreview files={files} handleDelete={handleDelete} />
 			)}
